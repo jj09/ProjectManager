@@ -1,0 +1,20 @@
+﻿@model ProjectManager.ViewModels.ManagerModel
+
+<h2>ProjectDelete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<table>
+    <tr><td>Course name:</td><td>@Model.Course.Name</td></tr>
+    <tr><td>Project No:</td><td>@Model.Project.ProjectNo</td></tr>
+    <tr><td>Name:</td><td>@Model.Project.Name</td></tr>
+    <tr><td>Deadline:</td><td>@String.Format("{0:d}", Model.Project.Deadline)</td></tr>
+</table>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Projects")
+    </p>
+}
+
+
