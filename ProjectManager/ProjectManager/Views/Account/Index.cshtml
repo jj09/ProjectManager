@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ProjectManager.Models.User>
+@using ProjectManager.Helpers
+<h2>Accounts manager</h2>
+<p>
+    @Html.ActionLink("Add User", "Add") |
+    @Html.ActionLink("Import Users", "Import") |
+    @Html.ActionLink("Delete All Users", "DeleteAllUsers") @*|
+    @Html.ActionLink("Add Users' Courses", "UsersCourses", "Manager", null, null)*@
+</p>
+<table class="manage">
+    <tr>
+        <th>
+            User Name
+        </th>
+        <th>
+            E-mail
+        </th>
+        <th>
+            Role
+        </th>
+        <th>
+            Comment
+        </th>
+        <th>
+            Locked Out
+        </th>
+        <th>
+            Creation date
+        </th>
+        <th>
+            Options
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.UserName
+            </td>
+            <td>@Html.Truncate(item.Email, 15)
+            </td>
+            <td>@item.Role
+            </td>
+            <td>@item.Comment
+            </td>
+            <td>@item.IsLockedOut
+            </td>
+            <td>@String.Format("{0:d}", item.CreationDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.UserID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.UserID }) |
+                @if (item.Role != "admin")
+                {
+                    @Html.ActionLink("Courses", "UserCourses", "Manager", new { userName = item.UserName }, null)
+                }
+            </td>
+        </tr>
+    }
+</table>

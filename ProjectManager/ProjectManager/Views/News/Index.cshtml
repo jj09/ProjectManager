@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ProjectManager.Models.News>
+@using ProjectManager.Helpers
+
+<h2>News managment</h2>
+
+<p>
+    @Html.ActionLink("Add News", "Add")
+</p>
+<table class="manage">
+    <tr>
+        <th>Title</th>
+        <th>Date</th>
+        <th>Text</th>
+        <th>Options</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>@Html.Truncate(item.Title, 25)</td>
+        <td>@String.Format("{0:d}", item.Date)</td>
+        <td>@Html.Truncate(item.Text, 25)</td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>
+

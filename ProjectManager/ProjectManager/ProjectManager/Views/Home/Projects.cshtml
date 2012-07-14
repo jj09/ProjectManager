@@ -1,0 +1,129 @@
+﻿@model IEnumerable<ProjectManager.ViewModels.ManagerModel>
+@using ProjectManager.Helpers
+<h2>Projects</h2>
+
+@if (Model.Count() == 0)
+{ 
+    <p>No courses found.</p> 
+}
+else
+{
+
+    foreach (var item in Model)
+    {
+        if (ViewBag.course != item.Course.Name)
+        {
+            ViewBag.course = item.Course.Name;
+            <h3>@ViewBag.course</h3>
+        }    
+        <table class="projstud">
+            <tr>
+                <th colspan="2">
+                    Project No @item.Project.ProjectNo (deadline: @String.Format("{0:d}", item.Project.Deadline))
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Report:
+                </td>
+                <td>
+                    @if (item.ProjectData != null && item.ProjectData.Pdf != null)
+                    {
+                        @Html.ActionLink(Html.Truncate(item.ProjectData.Pdf, 25), "../Uploads/PDF/" + item.ProjectData.Pdf)
+                       if (item.ProjectData.Note == 0)
+                       {
+                           using (Html.BeginForm("Projects", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "inline" }))
+                           {
+                                <input type="hidden" name="ProjectId" value="@item.Project.ID" />
+                                <input type="hidden" name="type" value="Pdf" />
+                                <input type="submit" value="Delete" />
+                           }
+                       }
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("Projects", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                        <input type="hidden" name="ProjectId" value="@item.Project.ID" />
+                        <input type="hidden" name="type" value="Pdf" />
+                        <input type="file" name="ufile" id="ufile" />
+                        <input type="submit" value="Upload" />
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Program:
+                </td>
+                <td>
+                    @if (item.ProjectData != null && item.ProjectData.Code != null)
+                    {
+                        @Html.ActionLink(Html.Truncate(item.ProjectData.Code, 25), "../Uploads/Code/" + item.ProjectData.Code)
+                   if (item.ProjectData.Note == 0)
+                   {
+                       using (Html.BeginForm("Projects", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "inline" }))
+                       {
+                            <input type="hidden" name="ProjectId" value="@item.Project.ID" />
+                            <input type="hidden" name="type" value="Code" />
+                            <input type="submit" value="Delete" />
+                       }
+                   }
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("Projects", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                        <input type="hidden" name="ProjectId" value="@item.Project.ID" />
+                        <input type="hidden" name="type" value="Code" />
+                        <input type="file" name="ufile" id="ufile" />
+                        <input type="submit" value="Upload" />
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Received:
+                </td>
+                <td>
+                    @if (item.ProjectData != null)
+                    {
+                        @item.ProjectData.Received
+                        if (item.Project.Deadline < item.ProjectData.Received)
+                        {
+                            <span style="color: Red">(after deadline)</span>
+                        }
+                    }
+                    else
+                    {
+                        @String.Format("-")
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Note:
+                </td>
+                <td>
+                    @if (item.ProjectData != null)
+                    {
+                        if (item.ProjectData.Note == 0)
+                        {
+                            @String.Format("-")
+                        }
+                        else
+                        {
+                            @String.Format("{0:F1}", item.ProjectData.Note)
+                        }
+                    }
+                    else
+                    {
+                        @String.Format("-")
+                    }
+                </td>
+            </tr>
+        </table>
+        <hr style="width: 400px;" />
+    }
+}

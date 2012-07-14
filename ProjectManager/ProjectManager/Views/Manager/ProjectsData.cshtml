@@ -1,0 +1,120 @@
+﻿@model IEnumerable<ProjectManager.ViewModels.ManagerModel>
+@using ProjectManager.Helpers
+<script type="text/javascript">
+    function success() {
+        $('#successInfo').text('Update successfully').show('fast').delay(1800).hide('fast');
+    }
+</script>
+
+<h2>@ViewBag.Title</h2>
+<div id="successInfo"></div>
+
+@if (Model.Count() == 0)
+{ 
+    <p>No projects found.</p> 
+}
+else
+{                          
+    <table class="manage">
+        <tr>
+            @if (ViewBag.showNames == true)
+            {
+                <th>
+                    Course
+                </th>
+                <th>
+                    Project
+                </th>
+            }
+            <th>
+                User
+            </th>
+            <th>
+                Report
+            </th>
+            <th>
+                Code
+            </th>
+            <th>
+                Received
+            </th>
+            <th>
+                Note
+            </th>
+            <th>
+                Plagiarism
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (ViewBag.showNames == true)
+                {
+                    <td>
+                        <abbr title="@item.Course.Name">@Html.Truncate(item.Course.Name, 15)</abbr>
+                    </td>
+                    <td>
+                        <abbr title="@item.Project.Name">@Html.Truncate(item.Project.Name, 15)</abbr>
+                    </td>
+                }
+                <td>
+                    @item.ProjectData.UserName
+                </td>
+                <td>
+                    @if (item.ProjectData.Pdf != null)
+                    {
+                        @Html.ActionLink("PDF", "../Uploads/PDF/" + item.ProjectData.Pdf)
+                    }
+                    else
+                    {
+                        @String.Format("-")
+                    }
+                </td>
+                <td>
+                    @if (item.ProjectData.Code != null)
+                    {
+                        @Html.ActionLink("Code", "../Uploads/Code/" + item.ProjectData.Code)
+                    }
+                    else
+                    {
+                        @String.Format("-")
+                    }
+                </td>
+                <td>
+                    @String.Format("{0:g}", item.ProjectData.Received)
+                    @if (item.Project.Deadline < item.ProjectData.Received)
+                    {
+                        <span style="color: Red">(after deadline)</span>
+                    }
+                </td>
+                <td>
+                    @*@using (Html.BeginForm("SetNote", "Manager", FormMethod.Post, new { id = "setnote", @class = "inline" }))*@
+                    @using (Ajax.BeginForm(
+                        "SetNote", "Manager", null,
+                        new AjaxOptions()
+                        {
+                            HttpMethod = "Post",
+                            OnFailure = "alert('Error')",
+                            OnSuccess = "success",
+                            OnComplete = "PostOnComplete"
+                        },
+                        new { id = "setnote", @class = "inline" }))
+                    {
+                        @Html.DropDownList("Note", new SelectList(ViewBag.notes, "Value", "Text", item.ProjectData.Note.ToString()))
+                        @Html.Hidden("pdID", item.ProjectData.ID)
+                        <input type="submit" value="OK" />
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Check", "ProjectCheck", new { id = item.ProjectData.ID, projectId = item.ProjectData.ProjectId })
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "ProjectsDataDelete", new { id = item.ProjectData.ID })
+                </td>
+            </tr>
+        }
+    </table>
+}

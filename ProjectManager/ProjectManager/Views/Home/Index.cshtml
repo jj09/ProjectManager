@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ProjectManager.Models.News>
+
+<h2>News</h2>
+
+@if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("admin"))
+{
+    <p>   
+       @Html.ActionLink("Add news", "Add", "News") |
+       @Html.ActionLink("News managment", "Index", "News")
+    </p>
+}
+
+@foreach (var item in Model)
+{
+    <h3>@item.Title</h3>
+    <p class="newsdate"> @String.Format("{0:d}", item.Date)</p>
+    <p>@item.Text</p>
+}
+
+
+
